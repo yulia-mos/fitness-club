@@ -1,0 +1,37 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: service-abonnement
+spec:
+  selector:
+    app: service-abonnement
+  type: NodePort
+  ports:
+    - name: http
+      port: 8080
+      nodePort: 31000
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: service-abonnement
+spec:
+  selector:
+    matchLabels:
+      app: service-abonnement
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: service-abonnement
+    spec:
+      containers:
+        - name: server
+          image: yuliamos/service-abonnement:latest
+          ports:
+            - name: http
+              containerPort: 8080
+
+---
