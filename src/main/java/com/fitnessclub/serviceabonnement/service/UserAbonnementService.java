@@ -23,8 +23,8 @@ import java.util.Optional;
 public class UserAbonnementService {
     private final UserAbonnementsRepo userAbonnementsRepo;
     private final AbonnementRepo abonnementRepo;
-    private final String userURL="http://localhost:8081/users";
-    private final String classURL="http://localhost:8082/classes";
+    //private final String userURL="http://localhost:8081/users";
+    //private final String classURL="http://localhost:8082/classes";
     public List<UserAbonnement> fetchAll() {
         return userAbonnementsRepo.findAll();
     }
@@ -40,7 +40,7 @@ public class UserAbonnementService {
         RestTemplate restTemplate = new RestTemplate();
         if (abonnementRepo.findById(abonnementId).isEmpty()) throw new IllegalArgumentException("Abonnement not found");
         try {
-            restTemplate.getForEntity(userURL + "/" + userId, UserDto.class);
+            restTemplate.getForEntity(System.getenv("USER_URL") + "/" + userId, UserDto.class);
             final UserAbonnement userAbonnement = new UserAbonnement(userId, abonnementId, barCode, numOfClassRemain,
                     numOfFreezeRemain, active);
             userAbonnementsRepo.save(userAbonnement);
@@ -62,7 +62,7 @@ public class UserAbonnementService {
         if (userId!=null) {
             try {
                 RestTemplate restTemplate = new RestTemplate();
-                restTemplate.getForEntity(userURL + "/" + userId, UserDto.class);
+                restTemplate.getForEntity(System.getenv("USER_URL") + "/" + userId, UserDto.class);
                 userAbonnement.setUserId(userId);
             } catch (Exception e) {
                 throw new IllegalArgumentException();
@@ -85,14 +85,13 @@ public class UserAbonnementService {
         UserAbonnement userAbonnement = maybeUserAbonnement.get();
         try {
             RestTemplate restTemplate = new RestTemplate();
-            ClassDto sportClass = restTemplate.getForObject(classURL + "/" + classId, ClassDto.class);
+            ClassDto sportClass = restTemplate.getForObject(System.getenv("CLASS_URL") + "/" + classId, ClassDto.class);
             final int numOfPeople = Objects.requireNonNull(sportClass).getNumOfPeople();
             final int numOfRegistered = sportClass.getNumOfRegistered();
             if (numOfPeople - numOfRegistered > 0) {
                 userAbonnement.setNumOfClassRemain(userAbonnement.getNumOfClassRemain() - 1);
                 sportClass.setNumOfRegistered(numOfRegistered + 1);
-                ResponseEntity<Void> responseEntity = restTemplate.exchange(classURL + "/" + classId,
-                        HttpMethod.PUT, new HttpEntity<>(sportClass), Void.class);
+                restTemplate.exchange(System.getenv("CLASS_URL") + "/" + classId, HttpMethod.PUT, new HttpEntity<>(sportClass), Void.class);
             }
         } catch (Exception e){
             throw new IllegalArgumentException();
@@ -105,12 +104,12 @@ public class UserAbonnementService {
         UserAbonnement userAbonnement = maybeUserAbonnement.get();
         try {
             RestTemplate restTemplate = new RestTemplate();
-            ClassDto sportClass = restTemplate.getForObject(classURL + "/" + classId, ClassDto.class);
+            ClassDto sportClass = restTemplate.getForObject(System.getenv("CLASS_URL") + "/" + classId, ClassDto.class);
             final int numOfRegistered = Objects.requireNonNull(sportClass).getNumOfRegistered();
             if (numOfRegistered > 0) {
                 userAbonnement.setNumOfClassRemain(userAbonnement.getNumOfClassRemain() + 1);
                 sportClass.setNumOfRegistered(numOfRegistered - 1);
-                ResponseEntity<Void> responseEntity = restTemplate.exchange(classURL + "/" + classId,
+                ResponseEntity<Void> responseEntity = restTemplate.exchange(System.getenv("CLASS_URL") + "/" + classId,
                         HttpMethod.PUT, new HttpEntity<>(sportClass), Void.class);
             }
         } catch (Exception e){

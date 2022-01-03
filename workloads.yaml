@@ -8,8 +8,8 @@ spec:
   type: NodePort
   ports:
     - name: http
-      port: 8080
-      nodePort: 31000
+      port: 8083
+      nodePort: 31003
 
 ---
 
@@ -29,9 +29,14 @@ spec:
     spec:
       containers:
         - name: server
-          image: yuliamos/service-abonnement:latest
+          image: yuliamos/service-abonnement
           ports:
             - name: http
-              containerPort: 8080
+              containerPort: 8083
+          env:
+            - name: USER_URL
+              value: http://service-identity:8081/users
+            - name: CLASS_URL
+              value: http://service-class:8082/classes
 
 ---

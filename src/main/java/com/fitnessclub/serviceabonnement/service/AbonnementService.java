@@ -19,7 +19,6 @@ import java.util.Optional;
 public final class AbonnementService {
     private final AbonnementRepo abonnementRepo;
     private final UserAbonnementsRepo userAbonnementsRepo;
-    private final String userURL="http://localhost:8081/users";
 
     public List<Abonnement> fetchAll(){
         return abonnementRepo.findAll();
@@ -75,6 +74,6 @@ public final class AbonnementService {
         long userId = maybeUserAbonnement.get().getUserId();
         final RestTemplate restTemplate= new RestTemplate();
         return restTemplate
-                .getForObject(userURL + "/" +userId, UserDto.class);
+                .getForObject(System.getenv("USER_URL") + "/" +userId, UserDto.class);
     }
 }
