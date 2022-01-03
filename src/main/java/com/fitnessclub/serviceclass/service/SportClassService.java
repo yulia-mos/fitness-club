@@ -15,7 +15,7 @@ import java.util.Optional;
 @Service
 public final class SportClassService {
     private final SportClassRepo sportClassRepo;
-    private final String userURL="http://localhost:8081/users";
+    //private final String userURL="http://localhost:8081/users";
     public List<SportClass> fetchAll(){
         return sportClassRepo.findAll();
     }
@@ -28,7 +28,7 @@ public final class SportClassService {
     public long create(Long trainerId, String kindOfSport, Integer numOfPeople, String sportHall, Integer numOfRegistered, Date date) {
         RestTemplate restTemplate = new RestTemplate();
         try {
-            restTemplate.getForEntity(userURL + "/" + trainerId, UserDto.class);
+            restTemplate.getForEntity(System.getenv("USER_URL") + "/" + trainerId, UserDto.class);
             final SportClass sportClass = new SportClass(trainerId, kindOfSport, numOfPeople, sportHall, numOfRegistered, date);
             SportClass savedSportClass = sportClassRepo.save(sportClass);
             return savedSportClass.getId();
@@ -44,7 +44,7 @@ public final class SportClassService {
         if (trainerId!=null) {
             try{
                 RestTemplate restTemplate = new RestTemplate();
-                restTemplate.getForEntity(userURL + "/" + trainerId, UserDto.class);
+                restTemplate.getForEntity(System.getenv("USER_URL") + "/" + trainerId, UserDto.class);
                 sportClass.setTrainerId(trainerId);
             } catch (Exception e) {throw new IllegalArgumentException();}
         }
@@ -67,7 +67,7 @@ public final class SportClassService {
         final SportClass sportClass=maybeClass.get();
         final long trainerId = sportClass.getTrainerId();
         RestTemplate restTemplate = new RestTemplate();
-        final UserDto trainer = restTemplate.getForObject(userURL + "/" + trainerId, UserDto.class);
+        final UserDto trainer = restTemplate.getForObject(System.getenv("USER_URL") + "/" + trainerId, UserDto.class);
         return trainer;
     }
 }

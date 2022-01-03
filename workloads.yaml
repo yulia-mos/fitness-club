@@ -1,0 +1,42 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: service-class
+spec:
+  selector:
+    app: service-class
+  type: NodePort
+  ports:
+    - name: http
+      port: 8082
+      nodePort: 31002
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: service-class
+spec:
+  selector:
+    matchLabels:
+      app: service-class
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: service-class
+    spec:
+      containers:
+        - name: server
+          image: yuliamos/service-class
+          ports:
+            - name: http
+              containerPort: 8082
+          env:
+            - name: USER_URL
+              value: http://service-identity:8081/users
+
+
+---
+

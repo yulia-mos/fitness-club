@@ -1,4 +1,4 @@
-FROM openjdk:17-alpine
+FROM openjdk:17
 WORKDIR /opt/server
 COPY ./target/service-class-0.0.1-SNAPSHOT.jar server.jar
 
