@@ -4,13 +4,10 @@ import com.fitnessclub.serviceidentity.dto.UserDto;
 import com.fitnessclub.serviceidentity.repo.model.User;
 import com.fitnessclub.serviceidentity.service.UserService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
-import java.util.Collection;
 import java.util.List;
 
 @RestController
